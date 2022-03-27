@@ -48,14 +48,14 @@ function assert {
 
 function GetLoginById {
 
-    local EXPECTED_LOGIN='"login":'$1
+    local EXPECTED_LOGIN='"login":'\"$1\"
 
     local QUERY_STRING=login=$1
     local REQ=${TESTED_URL_REQ}?${QUERY_STRING}
 
     local OUTPUT=$(/usr/bin/curl -s ${REQ} 2>&1)
     [[ -z "$OUTPUT" ]] && { echo "RETURN nothing"; exit 1; }
-
+        
     assert $OUTPUT $EXPECTED_LOGIN
 }
 
@@ -64,7 +64,7 @@ function LookingFor {
     local FIRST_NAME=$1
     local LAST_NAME=$2
 
-    local EXPECTED_LOGIN='"login":'$3
+    local EXPECTED_LOGIN='"login":'\"$3\"
 
     local QUERY_STRING="first_name=${FIRST_NAME}&last_name=${LAST_NAME}"
     local REQ=${TESTED_URL_REQ}?${QUERY_STRING}
@@ -77,10 +77,6 @@ function LookingFor {
 
 function Insert {
 
-    local FIRST_NAME=$1
-    local LAST_NAME=$2
-    local AGE=$3
-
     local OUTPUT=`/usr/bin/curl -s \
       --header "Content-Type: application/json" \
       --request POST --data @test.json \
@@ -91,7 +87,7 @@ function Insert {
 }
 
 function HttpGetLogin { GetLoginById biba2007thebest; }
-function HttpGetMask { LookingFor Biba Bobovsky biba; }
+function HttpGetMask { LookingFor Boba Bibovich boba; }
 function HttpPost { Insert; }
 
 InitTests=(
