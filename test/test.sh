@@ -90,8 +90,8 @@ function Insert {
     assert $OUTPUT 'OK'
 }
 
-function HttpGetLogin { GetLoginById 1; }
-function HttpGetMask { LookingFor biba bobovsky 2; }
+function HttpGetLogin { GetLoginById biba2007thebest; }
+function HttpGetMask { LookingFor Biba Bobovsky biba; }
 function HttpPost { Insert; }
 
 InitTests=(
