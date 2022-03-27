@@ -87,29 +87,27 @@ namespace database
 
     void Person::InsertJson(std::string jstr)
     {
-        //try
-		//{
-			std::cout << jstr << std::endl;
+        std::cout << jstr << std::endl;
 
-			Poco::JSON::Parser parser;
-			Poco::Dynamic::Var result = parser.parse(jstr);
+        Poco::JSON::Parser parser;
+        Poco::Dynamic::Var result = parser.parse(jstr);
 
-			Poco::JSON::Object::Ptr object = result.extract<Poco::JSON::Object::Ptr>();
+        Poco::JSON::Object::Ptr object = result.extract<Poco::JSON::Object::Ptr>();
 
-			_login = object->getValue<std::string>("login");
-			_first_name = object->getValue<std::string>("first_name");
-			_last_name = object->getValue<std::string>("last_name");
-			_age = object->getValue<int>("age");
-			
-			Poco::Data::Statement insert(_ses);
-			
-			insert << "INSERT INTO Person (login, first_name, last_name, age) VALUES (?, ?, ?, ?)",
-                use(_login),
-				use(_first_name),
-				use(_last_name),
-				use(_age);
-			
-			insert.execute();
+        _login = object->getValue<std::string>("login");
+        _first_name = object->getValue<std::string>("first_name");
+        _last_name = object->getValue<std::string>("last_name");
+        _age = object->getValue<int>("age");
+        
+        Poco::Data::Statement insert(_ses);
+        
+        insert << "INSERT INTO Person (login, first_name, last_name, age) VALUES (?, ?, ?, ?)",
+            use(_login),
+            use(_first_name),
+            use(_last_name),
+            use(_age);
+        
+        insert.execute();
     }
     
 } // namespace database
