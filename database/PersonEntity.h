@@ -14,14 +14,14 @@ namespace database
         Person();
         ~Person();
 
-        void GetLogin(int login);
+        void GetLogin(std::string login);
         Poco::JSON::Array LookingFor(std::string first_name, std::string last_name);
         Poco::JSON::Object toJson();
         void InsertJson(std::string jstr);
         void te();
 
     private:
-        int _login;
+        std::string _login;
         std::string _first_name;
         std::string _last_name;
         int _age;

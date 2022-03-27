@@ -24,7 +24,7 @@ namespace database
         Poco::JSON::Object jobj;
         jobj.set("login", _login);
         jobj.set("first_name", _first_name);
-        jobj.set("sername_name", _last_name);
+        jobj.set("last_name", _last_name);
         jobj.set("age", _age);
 
         return jobj;
@@ -32,7 +32,7 @@ namespace database
         //Poco::JSON::Stringifier::stringify(obj, out);
     }
     
-    void Person::GetLogin(int login)
+    void Person::GetLogin(std::string login)
     {
         Poco::Data::Statement select(_ses);
     
@@ -96,13 +96,15 @@ namespace database
 
 			Poco::JSON::Object::Ptr object = result.extract<Poco::JSON::Object::Ptr>();
 
+			_login = object->getValue<std::string>("login");
 			_first_name = object->getValue<std::string>("first_name");
 			_last_name = object->getValue<std::string>("last_name");
 			_age = object->getValue<int>("age");
 			
 			Poco::Data::Statement insert(_ses);
 			
-			insert << "INSERT INTO Person (first_name, last_name, age) VALUES (?, ?, ?)",
+			insert << "INSERT INTO Person (login, first_name, last_name, age) VALUES (?, ?, ?, ?)",
+                use(_login),
 				use(_first_name),
 				use(_last_name),
 				use(_age);

@@ -55,7 +55,7 @@ void PersonRequest::handleRequest(
         {
             try
             {
-                int login = std::stoi(form.get("login"));
+                std::string login = form.get("login");
             
                 _person.GetLogin(login);
 
@@ -86,9 +86,7 @@ void PersonRequest::handleRequest(
     else if(request.getMethod() == Poco::Net::HTTPRequest::HTTP_POST)
     {
         try
-        {
-            Poco::Net::HTMLForm form(request);
-			
+        {			
             std::string st = gulp(request.stream());
 
             _person.InsertJson(st);
