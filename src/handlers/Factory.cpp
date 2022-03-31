@@ -20,9 +20,9 @@ Poco::Net::HTTPRequestHandler* Factory::createRequestHandler(
 	const Poco::Net::HTTPServerRequest& request)
 {
 
-	std::string math = "/request";
+	std::string math = "/person";
 
-	if (startsWith(request.getURI(), "/request"))
+	if (startsWith(request.getURI(), "/person"))
 		return new PersonRequest(_pool);
 
 	return nullptr;

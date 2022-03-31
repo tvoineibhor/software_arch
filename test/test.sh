@@ -2,7 +2,7 @@
 
 HOST=localhost
 PORT=8080
-PATH=/request
+PATH=/person
 
 for i in "$@"; do
   case $i in
