@@ -15,7 +15,7 @@ namespace database
         ~Person();
 
         void GetLogin(std::string login);
-        Poco::JSON::Array LookingFor(std::string first_name, std::string last_name);
+        Poco::JSON::Array LookingForByMask(std::string first_name, std::string last_name);
         Poco::JSON::Object toJson();
         void InsertJson(std::string jstr);
         void te();

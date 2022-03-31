@@ -74,7 +74,7 @@ void PersonRequest::handleRequest(
                 std::string first_name = form.get("first_name");
                 std::string last_name = form.get("last_name");
 
-                Poco::JSON::Array jarr = _person.LookingFor(first_name, last_name);
+                Poco::JSON::Array jarr = _person.LookingForByMask(first_name, last_name);
                 Poco::JSON::Stringifier::stringify(jarr, out);
             }
             catch(...)
