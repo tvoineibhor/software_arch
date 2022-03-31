@@ -9,5 +9,5 @@ execute `start.sh` to build and run the server
 ## Test
 change directory to __test__ and execute `test.sh`
 ```
-cd test && ./test.sh --host=localhost --port=8080 --path=/request
+cd test && ./test.sh --host=localhost --port=8080 --path=/person
 ```
