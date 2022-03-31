@@ -54,13 +54,16 @@ namespace database
             throw Poco::Data::MySQL::StatementException("row is empty");
     }
 
-    Poco::JSON::Array Person::LookingFor(std::string first_name, std::string last_name)
+    Poco::JSON::Array Person::LookingForByMask(std::string first_name, std::string last_name)
     {
         Poco::Data::Statement select(_ses);
 
         Poco::JSON::Array jarr;
         
-        select << "SELECT * FROM Person where first_name=? and last_name=?",
+        first_name += "%";
+        last_name += "%";
+
+        select << "SELECT * FROM Person where first_name like ? and last_name like ?",
             into(_login),
             into(_first_name),
             into(_last_name),
