@@ -19,6 +19,9 @@ namespace database
         Poco::JSON::Object toJson();
         void InsertJson(std::string jstr);
         void te();
+        int CalcShardNum(std::string target);
+        std::string GetShardHint(size_t shard_number);
+        int GetShards();
 
     private:
         std::string _login;
