@@ -19,7 +19,5 @@ CREATE TABLE Person (
 
 INSERT INTO Person (login, first_name, last_name, age) VALUES
 ('boba', 'Boba', 'Bibovich', FLOOR(RAND()*(100-1)+1)),
-('biba2007thebest', 'Biba', 'Bobovsky', FLOOR(RAND()*(100-1)+1)),
-('ivan_terminator_nagibatorf', 'ivan', 'petrov', 20),
-('ivan_terminator_nagibatorff', 'ivan', 'petrov', 20);
+('biba2007thebest', 'Biba', 'Bobovsky', FLOOR(RAND()*(100-1)+1));
 
