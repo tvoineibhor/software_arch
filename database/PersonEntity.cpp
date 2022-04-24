@@ -19,6 +19,24 @@ namespace database
     {
     }
 
+    int Person::GetShards() 
+    {
+		return 2;
+	}
+
+    int Person::CalcShardNum(std::string target)
+    {
+        return std::hash<std::string>{}(target) % GetShards();
+    }
+
+    std::string Person::GetShardHint(size_t shard_number)
+    {
+        std::string result = "-- sharding:";
+        result += std::to_string(shard_number);
+
+        return result;
+    }
+
     Poco::JSON::Object Person::toJson()
     {
         Poco::JSON::Object jobj;
@@ -35,8 +53,10 @@ namespace database
     void Person::GetLogin(std::string login)
     {
         Poco::Data::Statement select(_ses);
-    
-        select << "SELECT * FROM Person WHERE login=?",
+
+        std::string sharding_hint = GetShardHint(CalcShardNum(login));
+
+        select << "SELECT * FROM Person WHERE login=?" + sharding_hint,
             into(_login),
             into(_first_name),
             into(_last_name),
@@ -63,7 +83,11 @@ namespace database
         first_name += "%";
         last_name += "%";
 
-        select << "SELECT * FROM Person where first_name like ? and last_name like ?",
+        for (int shard = 0; shard < 2; shard++)
+        {
+            std::string sharding_hint = GetShardHint(shard);
+
+            select << "SELECT * FROM Person where first_name like ? and last_name like ?" + sharding_hint,
             into(_login),
             into(_first_name),
             into(_last_name),
@@ -72,18 +96,19 @@ namespace database
             use(last_name),
             range(0, 1);
 
-        while (!select.done())
-        {
-            select.execute();
+            while (!select.done())
+            {
+                select.execute();
 
-            Poco::Data::RecordSet rs(select);
+                Poco::Data::RecordSet rs(select);
 
-            bool first_row = rs.moveFirst();
+                bool first_row = rs.moveFirst();
 
-            if(!first_row)
-                throw Poco::Data::MySQL::StatementException("row is empty");
+                if(!first_row)
+                    throw Poco::Data::MySQL::StatementException("row is empty");
 
-            jarr.add(Person::toJson());
+                jarr.add(Person::toJson());
+            }
         }
         return jarr;
     }
@@ -103,8 +128,10 @@ namespace database
         _age = object->getValue<int>("age");
         
         Poco::Data::Statement insert(_ses);
+
+        std::string sharding_hint = GetShardHint(CalcShardNum(_login));
         
-        insert << "INSERT INTO Person (login, first_name, last_name, age) VALUES (?, ?, ?, ?)",
+        insert << "INSERT INTO Person (login, first_name, last_name, age) VALUES (?, ?, ?, ?)" + sharding_hint,
             use(_login),
             use(_first_name),
             use(_last_name),

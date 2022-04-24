@@ -15,6 +15,9 @@
 #include <Poco/Util/Option.h>
 #include <Poco/Util/OptionCallback.h>
 
+#include <Poco/Data/RecordSet.h>
+#include <Poco/Data/MySQL/MySQLException.h>
+
 Server::Server() : _helpRequested(false)
 {
 }
@@ -110,8 +113,8 @@ int Server::main([[maybe_unused]] const std::vector<std::string> &args)
 		Poco::Data::MySQL::Connector::registerConnector();
 		//std::format()
 		std::stringstream ss;
-		ss << "host=" << _host << ";"
-			<< "port=" << _port << ";"
+		ss << "host=" << "127.0.0.1" << ";"
+			<< "port=" << "6033" << ";"
 			<< "db=" << _database << ";"
 			<< "user=" << _login << ";"
 			<< "password=" << _password << ";";
@@ -122,6 +125,29 @@ int Server::main([[maybe_unused]] const std::vector<std::string> &args)
 
         //Poco::Data::SessionPool pool("MySQL", "host=localhost;port=3306;db=stud;user=person;password=1234;compress=true;auto-reconnect=true");
        	Poco::Data::SessionPool pool("MySQL", connection);
+
+		Poco::Data::Session _ses(pool.get());
+		
+		Poco::Data::Statement select(_ses);
+
+		// std::string l = "biba";
+		// std::string _l;
+
+		// select << "SELECT * FROM Person WHERE login=?",
+        //     Poco::Data::Keywords::into(_l),
+        //     Poco::Data::Keywords::use(l),
+        //     Poco::Data::Keywords::now;
+        
+        // select.execute();
+        
+        // Poco::Data::RecordSet rs(select);
+
+        // bool first_row = rs.moveFirst();
+
+        // if(!first_row)
+        //     throw Poco::Data::MySQL::StatementException("row is empty");
+
+		//std::cout << _l << std::endl;
 
 		Poco::Net::ServerSocket svs(Poco::Net::SocketAddress("0.0.0.0", port));
 		Poco::Net::HTTPServer srv(new handlers::Factory(pool), svs, new Poco::Net::HTTPServerParams);

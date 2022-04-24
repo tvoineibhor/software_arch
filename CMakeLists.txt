@@ -1,10 +1,10 @@
 cmake_minimum_required(VERSION 2.5)
 
-project(poco-http-server-lab1)
+project(poco-http-server-lab2)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 
-add_executable(poco-http-server-lab1
+add_executable(poco-http-server-lab2
     src/handlers/Factory.cpp
     src/handlers/PersonRequest.cpp
     src/main.cpp
@@ -14,7 +14,7 @@ add_executable(poco-http-server-lab1
 
 find_package(Poco REQUIRED Foundation Util Net XML JSON DataMySQL Data)
 
-target_link_libraries(poco-http-server-lab1
+target_link_libraries(poco-http-server-lab2
     PocoUtil
     PocoNet
     PocoXML
