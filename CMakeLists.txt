@@ -1,10 +1,17 @@
 cmake_minimum_required(VERSION 2.5)
 
-project(poco-http-server-lab2)
+project(poco-http-server-lab3)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+set (REDISCPP_FLAGS "-DREDISCPP_HEADER_ONLY=ON")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 ${REDISCPP_FLAGS}")
 
-add_executable(poco-http-server-lab2
+find_package(Poco REQUIRED Foundation Util Net XML JSON DataMySQL Data)
+find_package(Boost 1.67.0 REQUIRED COMPONENTS thread system iostreams)
+include_directories(${Boost_INCLUDE_DIRS})
+link_directories(${Boost_LIBRARY_DIRS})
+find_package(JNI REQUIRED)
+
+add_executable(poco-http-server-lab3
     src/handlers/Factory.cpp
     src/handlers/PersonRequest.cpp
     src/main.cpp
@@ -12,9 +19,7 @@ add_executable(poco-http-server-lab2
     database/PersonEntity.cpp
 )
 
-find_package(Poco REQUIRED Foundation Util Net XML JSON DataMySQL Data)
-
-target_link_libraries(poco-http-server-lab2
+target_link_libraries(poco-http-server-lab3
     PocoUtil
     PocoNet
     PocoXML
@@ -22,5 +27,6 @@ target_link_libraries(poco-http-server-lab2
     PocoJSON
     PocoData
     PocoDataMySQL
+    ${Boost_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
 )
