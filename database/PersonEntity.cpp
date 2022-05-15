@@ -5,6 +5,9 @@
 #include <Poco/JSON/Parser.h>
 #include <Poco/Dynamic/Var.h>
 
+#include <redis-cpp/stream.h>
+#include <redis-cpp/execute.h>
+
 #include <iostream>
 
 using namespace Poco::Data::Keywords;
@@ -49,8 +52,39 @@ namespace database
 
         //Poco::JSON::Stringifier::stringify(obj, out);
     }
-    
-    void Person::GetLogin(std::string login)
+
+    void Person::fromJSON(std::string str) {
+        Poco::JSON::Parser parser;
+        Poco::Dynamic::Var result = parser.parse(str);
+        Poco::JSON::Object::Ptr pObject = result.extract<Poco::JSON::Object::Ptr>();
+
+        _login = pObject->getValue<std::string>("login");
+        _first_name = pObject->getValue<std::string>("first_name");
+        _last_name = pObject->getValue<std::string>("last_name");
+        _age = pObject->getValue<long>("age");
+    }
+
+    bool Person::GetLoginCache(std::string login)
+    {
+        try
+        {
+            auto stream = rediscpp::make_stream("localhost", "6379");
+            auto response = rediscpp::execute(*stream, "get", login);
+            
+            std::cout << "Get key '" << login << "': " << response.as<std::string>() << std::endl;
+
+            fromJSON(response.as<std::string>());
+            
+            return true;
+        }
+        catch(const std::exception& e)
+        {
+            std::cerr << e.what() << '\n';
+        }
+        return false;
+    }
+
+    void Person::GetLoginDB(std::string login)
     {
         Poco::Data::Statement select(_ses);
 
@@ -72,6 +106,42 @@ namespace database
 
         if(!first_row)
             throw Poco::Data::MySQL::StatementException("row is empty");
+
+        SetLoginCache();
+    }
+
+    void Person::SetLoginCache()
+    {
+        auto stream = rediscpp::make_stream("localhost", "6379");
+        std::string key = _login;
+
+        std::stringstream ss;
+        Poco::JSON::Stringifier::stringify(Person::toJson(), ss);
+
+        std::string message = ss.str();
+
+        auto response = rediscpp::execute(*stream, "set",
+                                          key,  message, "ex", "1000");
+
+        std::cout << message << std::endl;
+    }
+
+    void Person::SaveCache()
+    {
+        std::string key = _login;
+
+        std::stringstream ss;
+        Poco::JSON::Stringifier::stringify(Person::toJson(), ss);
+
+        std::string message = ss.str();
+
+        std::cout << message << std::endl;
+    }
+    
+    void Person::GetLogin(std::string login)
+    {
+        if(!GetLoginCache(login))
+            GetLoginDB(login);   
     }
 
     Poco::JSON::Array Person::LookingForByMask(std::string first_name, std::string last_name)
@@ -138,6 +208,8 @@ namespace database
             use(_age);
         
         insert.execute();
+
+        SetLoginCache();
     }
     
 } // namespace database

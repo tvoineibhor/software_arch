@@ -17,11 +17,15 @@ namespace database
         void GetLogin(std::string login);
         Poco::JSON::Array LookingForByMask(std::string first_name, std::string last_name);
         Poco::JSON::Object toJson();
+        void fromJSON(std::string str);
         void InsertJson(std::string jstr);
         void te();
         int CalcShardNum(std::string target);
         std::string GetShardHint(size_t shard_number);
         int GetShards();
+
+        void SaveCache();
+        void SetLoginCache();
 
     private:
         std::string _login;
@@ -30,6 +34,9 @@ namespace database
         int _age;
 
         Poco::Data::Session _ses;
+
+        void GetLoginDB(std::string login);
+        bool GetLoginCache(std::string login);
 
     };
 } // namespace database
