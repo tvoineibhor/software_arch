@@ -14,15 +14,7 @@ AMQP_TOPIC=hello
 AMQP_URL=/
 
 BUILD_DIR=build
-EXECUTABLE_FILE=$BUILD_DIR/poco-http-server-lab3
-
-mkdir -p build
-
-cd build
-cmake ..
-make
-
-cd ..
+EXECUTABLE_FILE=$BUILD_DIR/amqp_consume
 
 ./$EXECUTABLE_FILE \
     --host=$HOST \
