@@ -194,36 +194,11 @@ int Server::main([[maybe_unused]] const std::vector<std::string> &args)
 
 		std::cout << connection << std::endl;
 
-        //Poco::Data::SessionPool pool("MySQL", "host=localhost;port=3306;db=stud;user=person;password=1234;compress=true;auto-reconnect=true");
        	Poco::Data::SessionPool pool("MySQL", connection);
 
 		Poco::Data::Session _ses(pool.get());
 		
 		Poco::Data::Statement select(_ses);
-
-		//SimplePocoHandler handler("localhost", 5672);
-        //AMQP::Connection conn(&handler, AMQP::Login("guest", "guest"), "/");		
-		//AMQP::Channel channel(&conn);
-		
-
-		// std::string l = "biba";
-		// std::string _l;
-
-		// select << "SELECT * FROM Person WHERE login=?",
-        //     Poco::Data::Keywords::into(_l),
-        //     Poco::Data::Keywords::use(l),
-        //     Poco::Data::Keywords::now;
-        
-        // select.execute();
-        
-        // Poco::Data::RecordSet rs(select);
-
-        // bool first_row = rs.moveFirst();
-
-        // if(!first_row)
-        //     throw Poco::Data::MySQL::StatementException("row is empty");
-
-		//std::cout << _l << std::endl;
 
 		Poco::Net::ServerSocket svs(Poco::Net::SocketAddress("0.0.0.0", port));
 		Poco::Net::HTTPServer srv(new handlers::Factory(pool), svs, new Poco::Net::HTTPServerParams);
@@ -236,4 +211,3 @@ int Server::main([[maybe_unused]] const std::vector<std::string> &args)
 	}
 	return Application::EXIT_OK;
 }
-//sudo ./build/hl_mai_lab_01 --host=localhost --port=3306 --login=stud --password=stud --database=stud
