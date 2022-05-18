@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.5)
 
-project(poco-http-server-lab3)
+project(poco-http-server-lab4)
 
 set (REDISCPP_FLAGS "-DREDISCPP_HEADER_ONLY=ON")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 ${REDISCPP_FLAGS}")
@@ -11,18 +11,17 @@ include_directories(${Boost_INCLUDE_DIRS})
 link_directories(${Boost_LIBRARY_DIRS})
 find_package(JNI REQUIRED)
 
-add_executable(poco-http-server-lab3
+add_executable(poco-http-server-lab4
     src/handlers/Factory.cpp
     src/handlers/PersonRequest.cpp
     src/main.cpp
     src/Server.cpp
     src/writer/SimplePocoHandler.cpp
     database/PersonEntity.cpp
-    config/amqp.cpp
     config/config.cpp
 )
 
-target_link_libraries(poco-http-server-lab3
+target_link_libraries(poco-http-server-lab4
     PocoUtil
     PocoNet
     PocoXML
@@ -39,7 +38,6 @@ add_executable(amqp_consume
     src/writer/amqp_consume.cpp
     src/writer/SimplePocoHandler.cpp
     database/PersonEntity.cpp
-    config/amqp.cpp
     config/config.cpp
 )
 

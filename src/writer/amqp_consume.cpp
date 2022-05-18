@@ -26,7 +26,7 @@ int main(int argc, char** argv)
     po::options_description desc ("Allowed options");
     desc.add_options()
     ("help,h", "This screen")
-    ("amqp_url,", po::value<std::string>()->required(), "set amqp url")
+    ("url,", po::value<std::string>()->required(), "set amqp url")
     ("amqp_host,", po::value<std::string>()->required(), "set amqp host")
     ("amqp_port,", po::value<int>()->required(), "set amqp port")
     ("amqp_login,", po::value<std::string>()->required(), "set amqp login")
@@ -75,7 +75,7 @@ int main(int argc, char** argv)
 
     AMQP::Connection connection(&handler, AMQP::Login(
         vm["amqp_login"].as<std::string>(), vm["amqp_password"].as<std::string>()), 
-        vm["amqp_url"].as<std::string>()
+        vm["url"].as<std::string>()
     );
 
     AMQP::Channel channel(&connection);
