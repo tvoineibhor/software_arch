@@ -89,7 +89,7 @@ void PersonRequest::handleRequest(
         {			
             std::string st = gulp(request.stream());
 
-            _person.InsertJson(st);
+            _person.InsertQueue(st);
 
             out << "OK";
         }

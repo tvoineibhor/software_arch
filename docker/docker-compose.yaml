@@ -51,6 +51,15 @@ services:
     command: redis-server --save 20 1 --loglevel warning 
     volumes: 
       - cache:/data
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    hostname: my-rabbit
+    depends_on:
+      - "proxysql"
+    ports:
+      - 5672:5672
+      - 15672:15672
 volumes:
  cache:
   driver: local

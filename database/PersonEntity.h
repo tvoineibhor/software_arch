@@ -4,6 +4,8 @@
 #include <Poco/JSON/Object.h>
 #include <Poco/JSON/Array.h>
 
+#include "../src/writer/SimplePocoHandler.h"
+
 namespace database
 {
     class Person
@@ -19,6 +21,7 @@ namespace database
         Poco::JSON::Object toJson();
         void fromJSON(std::string str);
         void InsertJson(std::string jstr);
+        void InsertQueue(std::string jstr);
         void te();
         int CalcShardNum(std::string target);
         std::string GetShardHint(size_t shard_number);

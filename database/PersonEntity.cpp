@@ -5,8 +5,13 @@
 #include <Poco/JSON/Parser.h>
 #include <Poco/Dynamic/Var.h>
 
+#include "../config/config.h"
+
 #include <redis-cpp/stream.h>
 #include <redis-cpp/execute.h>
+
+#include <memory>
+#include <amqpcpp.h>
 
 #include <iostream>
 
@@ -123,6 +128,7 @@ namespace database
         auto response = rediscpp::execute(*stream, "set",
                                           key,  message, "ex", "1000");
 
+        std::cout << "Cached:" << std::endl;
         std::cout << message << std::endl;
     }
 
@@ -210,6 +216,26 @@ namespace database
         insert.execute();
 
         SetLoginCache();
+    }
+    void Person::InsertQueue(std::string jstr)
+    {
+        static SimplePocoHandler handler(Config::get().amqp_host(), Config::get().amqp_port());
+
+        static AMQP::Connection connection(&handler, AMQP::Login(
+            Config::get().amqp_login(), Config::get().amqp_password()), Config::get().url()
+        );
+        static AMQP::Channel channel(&connection);
+
+        channel.onReady(
+            [&]()
+            {
+                std::cout << "ready" << std::endl;
+                    channel.publish("", Config::get().topic(), jstr.c_str());
+                    std::cout << " [x] Sent " << std::endl;
+                handler.quit(); 
+            });
+
+        handler.loop();
     }
     
 } // namespace database
