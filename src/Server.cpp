@@ -18,6 +18,10 @@
 #include <Poco/Data/RecordSet.h>
 #include <Poco/Data/MySQL/MySQLException.h>
 
+#include "writer/SimplePocoHandler.h"
+#include <memory>
+#include <amqpcpp.h>
+
 Server::Server() : _helpRequested(false)
 {
 }
@@ -71,6 +75,42 @@ void Server::defineOptions(Poco::Util::OptionSet &options)
                 .repeatable(false)
                 .argument("value")
                 .callback(Poco::Util::OptionCallback<Server>(this, &Server::handleDatabase)));
+        options.addOption(
+            Poco::Util::Option("amqp_host", "qh", "set ampq host")
+                .required(false)
+                .repeatable(false)
+                .argument("value")
+                .callback(Poco::Util::OptionCallback<Server>(this, &Server::handleAmqpHost)));
+        options.addOption(
+            Poco::Util::Option("amqp_port", "qp", "set amqp port")
+                .required(false)
+                .repeatable(false)
+                .argument("value")
+                .callback(Poco::Util::OptionCallback<Server>(this, &Server::handleAmqpPort)));
+        options.addOption(
+            Poco::Util::Option("amqp_login", "ql", "set amqp login")
+                .required(false)
+                .repeatable(false)
+                .argument("value")
+                .callback(Poco::Util::OptionCallback<Server>(this, &Server::handleAmqpLogin)));
+        options.addOption(
+            Poco::Util::Option("amqp_password", "qpw", "set amqp password")
+                .required(false)
+                .repeatable(false)
+                .argument("value")
+                .callback(Poco::Util::OptionCallback<Server>(this, &Server::handleAmqpPassword)));
+        options.addOption(
+            Poco::Util::Option("url", "qu", "set url")
+                .required(false)
+                .repeatable(false)
+                .argument("value")
+                .callback(Poco::Util::OptionCallback<Server>(this, &Server::handleAmqpUrl)));
+        options.addOption(
+            Poco::Util::Option("topic", "qt", "topic")
+                .required(false)
+                .repeatable(false)
+                .argument("value")
+                .callback(Poco::Util::OptionCallback<Server>(this, &Server::handleAmqpTopic)));
 }
 
 void Server::handleHost([[maybe_unused]] const std::string &name, [[maybe_unused]] const std::string &value)
@@ -104,6 +144,37 @@ void Server::handlePort([[maybe_unused]] const std::string &name, [[maybe_unused
 	// Config::get().host() = value;
 }
 
+void Server::handleAmqpHost([[maybe_unused]] const std::string &name, [[maybe_unused]] const std::string &value)
+{
+	std::cout << "amqp_host:" << value << std::endl;
+	Config::get().amqp_host() = value;
+}
+void Server::handleAmqpLogin([[maybe_unused]] const std::string &name, [[maybe_unused]] const std::string &value)
+{
+	std::cout << "amqp_login:" << value << std::endl;
+	Config::get().amqp_login() = value;
+}
+void Server::handleAmqpPassword([[maybe_unused]] const std::string &name, [[maybe_unused]] const std::string &value)
+{
+	std::cout << "amqp_password:" << value << std::endl;
+	Config::get().amqp_password() = value;
+}
+void Server::handleAmqpTopic([[maybe_unused]] const std::string &name, [[maybe_unused]] const std::string &value)
+{
+	std::cout << "amqp_topic:" << value << std::endl;
+	Config::get().topic() = value;
+}
+void Server::handleAmqpUrl([[maybe_unused]] const std::string &name, [[maybe_unused]] const std::string &value)
+{
+	std::cout << "amqp_url:" << value << std::endl;
+	Config::get().url() = value;
+}
+void Server::handleAmqpPort([[maybe_unused]] const std::string &name, [[maybe_unused]] const std::string &value)
+{
+	std::cout << "amqp_port:" << value << std::endl;
+	Config::get().amqp_port() = std::stoi(value);
+}
+
 int Server::main([[maybe_unused]] const std::vector<std::string> &args)
 {
 	if (!_helpRequested)
@@ -129,6 +200,11 @@ int Server::main([[maybe_unused]] const std::vector<std::string> &args)
 		Poco::Data::Session _ses(pool.get());
 		
 		Poco::Data::Statement select(_ses);
+
+		//SimplePocoHandler handler("localhost", 5672);
+        //AMQP::Connection conn(&handler, AMQP::Login("guest", "guest"), "/");		
+		//AMQP::Channel channel(&conn);
+		
 
 		// std::string l = "biba";
 		// std::string _l;
